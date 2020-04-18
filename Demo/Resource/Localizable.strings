@@ -1,0 +1,12 @@
+/* 
+  Localizables.strings
+  JSSwipeableCell
+
+  Created by JSilver on 2020/04/17.
+  Copyright © 2020 JSilver. All rights reserved.
+*/
+
+"title" = "JSSwipeableCell";
+
+"delete_title" = "Delete";
+"archive_title" = "Archive";
