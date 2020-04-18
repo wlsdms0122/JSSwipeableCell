@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name                  = 'JSSwipeableCell'
-    s.version               = '1.0.0'
+    s.version               = '1.0.2'
     s.summary               = 'Transform UICollectionViewCell to be swipeable.'
     s.description           = <<-DESC
                               This framework can transform 'UICollectionViewCell' to be swipeable.
@@ -12,6 +12,6 @@ Pod::Spec.new do |s|
     s.source                = { :git => 'https://github.com/wlsdms0122/JSSwipeableCell.git', :tag => s.version.to_s }
     
     s.swift_versions         = '5'
-    s.ios.deployment_target = '11.0'
+    s.ios.deployment_target = '10.0'
     s.source_files          = 'JSSwipeableCell/Source/*.swift'
 end
