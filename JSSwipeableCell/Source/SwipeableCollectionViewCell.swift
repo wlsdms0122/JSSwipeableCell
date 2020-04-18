@@ -60,6 +60,11 @@ open class JSSwipeableCollectionViewCell: UICollectionViewCell {
     }
     
     // MARK: - lifecycle
+    open override func prepareForReuse() {
+        super.prepareForReuse()
+        reset(animated: false)
+    }
+    
     open override func didMoveToSuperview() {
         super.didMoveToSuperview()
         
