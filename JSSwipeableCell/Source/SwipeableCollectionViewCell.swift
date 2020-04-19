@@ -187,6 +187,8 @@ open class JSSwipeableCollectionViewCell: UICollectionViewCell {
             
             // Save origin point of content view
             origin = contentView.frame.origin
+            // Call will swipe event
+            willSwipe(able: self)
             
         case .changed:
             // Get pan translation
@@ -221,6 +223,8 @@ open class JSSwipeableCollectionViewCell: UICollectionViewCell {
             
             // Move content view
             self.contentView.frame.origin.x = point
+            // Call did swipe event
+            didSwipe(able: self, translation: translation, direction: direction!)
             
         case .ended:
             // Get pan translation & velocity
@@ -248,6 +252,8 @@ open class JSSwipeableCollectionViewCell: UICollectionViewCell {
             default:
                 return
             }
+            // Call end swipe event
+            endSwipe(able: self, translation: translation, direction: direction!)
             
             // Animate content view set origin
             endAnimator = UIViewPropertyAnimator(duration: speed, curve: .linear, animations: {
@@ -272,6 +278,11 @@ open class JSSwipeableCollectionViewCell: UICollectionViewCell {
             reset(animated: true)
         }
     }
+    
+    // MARK: - events
+    open func willSwipe(able cell: JSSwipeableCollectionViewCell) { }
+    open func didSwipe(able cell: JSSwipeableCollectionViewCell, translation: CGPoint, direction: Direction) { }
+    open func endSwipe(able cell: JSSwipeableCollectionViewCell, translation: CGPoint, direction: Direction) { }
 }
 
 extension JSSwipeableCollectionViewCell: UIGestureRecognizerDelegate {
