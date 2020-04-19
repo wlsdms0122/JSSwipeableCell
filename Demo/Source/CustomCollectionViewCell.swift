@@ -27,8 +27,6 @@ class CustomCollectionViewCell: JSSwipeableCollectionViewCell {
         return view
     }()
     
-    var constraint: NSLayoutConstraint?
-    
     // MARK: - constructor
     override init(frame: CGRect) {
         super.init(frame: frame)
