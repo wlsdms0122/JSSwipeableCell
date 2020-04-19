@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
     s.name                  = 'JSSwipeableCell'
-    s.version               = '1.0.2'
+    s.version               = '1.1.0'
     s.summary               = 'Transform UICollectionViewCell to be swipeable.'
     s.description           = <<-DESC
                               This framework can transform 'UICollectionViewCell' to be swipeable.
