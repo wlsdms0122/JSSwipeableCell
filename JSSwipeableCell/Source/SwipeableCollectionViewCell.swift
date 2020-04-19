@@ -36,7 +36,19 @@ open class JSSwipeableCollectionViewCell: UICollectionViewCell {
     
     // MARK: - property
     private var panGestureRecognizer: UIPanGestureRecognizer?
-    private var resetAnimator: UIViewPropertyAnimator?
+    
+    private var resetAnimator: UIViewPropertyAnimator? {
+        didSet {
+            oldValue?.stopAnimation(false)
+            oldValue?.finishAnimation(at: .current)
+        }
+    }
+    private var endAnimator: UIViewPropertyAnimator? {
+        didSet {
+            oldValue?.stopAnimation(false)
+            oldValue?.finishAnimation(at: .current)
+        }
+    }
     
     private var origin: CGPoint = .zero
     private(set) var direction: Direction? {
@@ -48,6 +60,7 @@ open class JSSwipeableCollectionViewCell: UICollectionViewCell {
     
     /// Swipe animation speed (seconds). default is `0.3` seconds
     open var speed: Double = 0.3
+    open var isSwipeThreshold: Bool = true
     
     // MARK: - constructor
     public override init(frame: CGRect) {
@@ -153,12 +166,10 @@ open class JSSwipeableCollectionViewCell: UICollectionViewCell {
                 resetOrigin()
             }
             resetAnimator?.addCompletion({
-                self.resetAnimator = nil
                 if $0 == .end {
                     self.direction = nil
                 }
             })
-            
             resetAnimator?.startAnimation()
             
         } else {
@@ -171,12 +182,11 @@ open class JSSwipeableCollectionViewCell: UICollectionViewCell {
     @objc private func handlePan(gesture: UIPanGestureRecognizer) {
         switch gesture.state {
         case .began:
+            resetAnimator = nil
+            endAnimator = nil
+            
             // Save origin point of content view
             origin = contentView.frame.origin
-            if origin == .zero {
-                // Initialize direction if content view positioned .zero
-                direction = nil
-            }
             
         case .changed:
             // Get pan translation
@@ -191,7 +201,7 @@ open class JSSwipeableCollectionViewCell: UICollectionViewCell {
             switch direction {
             case .left:
                 let width = rightActionView.bounds.width
-                if point < -width {
+                if isSwipeThreshold && point < -width {
                     point = -(width + max(abs(point) - width, 0) * Self.SWIPE_THRESHOLD_WEIGHT)
                 } else if point > 0 {
                     point *= Self.SWIPE_THRESHOLD_WEIGHT
@@ -199,7 +209,7 @@ open class JSSwipeableCollectionViewCell: UICollectionViewCell {
                 
             case .right:
                 let width = leftActionView.bounds.width
-                if point > width {
+                if isSwipeThreshold && point > width {
                     point = width + max(abs(point) - width, 0) * Self.SWIPE_THRESHOLD_WEIGHT
                 } else if point < 0 {
                     point *= Self.SWIPE_THRESHOLD_WEIGHT
@@ -240,14 +250,16 @@ open class JSSwipeableCollectionViewCell: UICollectionViewCell {
             }
             
             // Animate content view set origin
-            UIView.animate(withDuration: speed, delay: 0, options: .allowUserInteraction, animations: {
+            endAnimator = UIViewPropertyAnimator(duration: speed, curve: .linear, animations: {
                 self.contentView.frame.origin.x = point
                 actionView.layoutIfNeeded()
-            }, completion: {
-                if $0 && point == 0 {
+            })
+            endAnimator?.addCompletion({
+                if $0 == .end && point == 0 {
                     self.direction = nil
                 }
             })
+            endAnimator?.startAnimation()
             
         default:
             break
